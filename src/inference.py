@@ -36,7 +36,7 @@ print(bcolors.ENDC)
 print("default: model output")
 print()
 print(bcolors.YELLOW, end = "")
-print(start_prompt,end = "")
+print(START_PROMPT,end = "")
 print(bcolors.ENDC, end = "")
 
 start_prompt = tokenizer.encode("<SOS>"+START_PROMPT).ids
