@@ -51,7 +51,7 @@ for e in range(EPOCHS):
             if i % SAVE_FREQ == 0:
                 print(f"saving model to {MODEL_PATH}")
                 torch.save(model.state_dict(),MODEL_PATH)
-        except Exception as e:
+        except Exception as ex:
             print(f"not enough memory for the batch | longest seq len: {xb.shape[1]} | skipping iteration")
             del xb
             del yb
