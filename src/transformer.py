@@ -152,12 +152,8 @@ class Transformer(torch.nn.Module):
 
     def forward(self,x):
 
-        x = x
-
-        y = x
-
         for layer in self.layers:
-            y = layer(y)
+            x = layer(x)
 
-        return y
+        return x
 

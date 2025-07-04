@@ -28,6 +28,10 @@ except FileNotFoundError:
 CE = torch.nn.CrossEntropyLoss()
 optim = torch.optim.Adam(model.parameters(),lr = LEARNING_RATE)
 
+# amplify the loss before gradient computation and then scale the gradients 
+# to avoid underflow while using half precision
+scaler = torch.amp.GradScaler() if device == torch.device('cuda') else None
+
 for e in range(EPOCHS):
 
     for i,(xb,yb) in enumerate(iter(dataloader)):
@@ -36,15 +40,21 @@ for e in range(EPOCHS):
             xb = xb.to(device)
             yb = yb.to(device)
 
-            predb = model(xb)
+            with torch.amp.autocast('cuda' if device == torch.device("cuda") else 'cpu',enabled=(device == torch.device('cuda'))):
+                predb = model(xb)
 
-            # predb is transposed because for some fucking reason torch 
-            # always wants the classes as the second dimension
-            loss = CE(predb.mT,yb)
+                # predb is transposed because for some fucking reason torch 
+                # always wants the classes as the second dimension
+                loss = CE(predb.mT,yb)
 
             optim.zero_grad()
-            loss.backward()
-            optim.step()
+            if scaler:
+                scaler.scale(loss).backward()
+                scaler.step(optim)
+                scaler.update()
+            else:
+                loss.backward()
+                optim.step()
 
             if i % PRINT_FREQ == 0:
                 print(f"iter {i} train loss {loss}")
