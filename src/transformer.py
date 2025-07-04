@@ -100,12 +100,10 @@ class MLP(torch.nn.Module):
 
     def forward(self, x):
         
-        y = x
-
         for layer in self.layers:
-            y = layer(y)
+            x = layer(x)
 
-        return y
+        return x
         
         
 class BaseBlock(torch.nn.Module):
@@ -123,8 +121,6 @@ class BaseBlock(torch.nn.Module):
 
 
     def forward(self, x):
-        
-        x = x
         
         x = self.mha(self.layernorm1(x)) + x
 
