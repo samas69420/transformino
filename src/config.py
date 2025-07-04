@@ -35,5 +35,5 @@ PRINT_FREQ = 100
 # INFERENCE
 
 MAX_TOKENS = 1000
-OUTPUT_TYPE = "argmax" # or "argmax"
+OUTPUT_TYPE = "sample" # or "argmax"
 START_PROMPT = "Hello world, I am "
